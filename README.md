@@ -36,7 +36,7 @@ Installation
 1.  Clone the repository
     
 ```bash 
-git clone https://bitbucket.org/your-username/biblioteca-api.git  cd biblioteca-api
+git clone https://github.com/kiketracks40/biblioteca-api.git  cd biblioteca-api
 ```
 
 1.  Install dependencies
