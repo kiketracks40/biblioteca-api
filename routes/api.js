@@ -7,6 +7,7 @@ const ejemplarController = require('../controllers/ejemplarController');
 const prestamoController = require('../controllers/prestamoController');
 const usuarioController = require('../controllers/usuarioController');
 const categoriaController = require('../controllers/categoriaController');
+const reporteController = require('../controllers/reporteController');
 const authController = require('../controllers/authController');
 const authMiddleware = require('../middleware/auth');
 const validator = require('../middleware/validator');
@@ -35,7 +36,7 @@ router.post('/auth/logout', authController.logout);
 
 
 router.get('/usuarios', checkPermission('read'), usuarioController.listar);
-router.post('/usuarios', [validator(schemas.usuario, 'body'), checkPermission('create')], usuarioController.crear);
+router.post('/usuarios', checkPermission('create'), usuarioController.crear);
 router.put('/usuarios/:id', checkPermission('update'), usuarioController.actualizar);
 router.delete('/usuarios/:id', checkPermission('delete'), usuarioController.eliminar);
 router.get('/usuarios/prestamos', checkPermission('read'), usuarioController.obtenerPrestamosPorUsuario);
@@ -66,12 +67,17 @@ router.post('/autores', checkPermission('create'), autorController.crear);
 router.post('/ejemplares', checkPermission('create'), ejemplarController.crear);
 router.put('/ejemplares/:ejemplarId/estado', checkPermission('update'), ejemplarController.actualizarEstado);
 
-router.post('/prestamos', [validator(schemas.prestamo, 'body'), checkPermission('create')], prestamoController.crearPrestamo);
+router.post('/prestamos', checkPermission('create'), prestamoController.crearPrestamo);
+router.post('/prestamos', checkPermission('createPrestamo'), prestamoController.crearPrestamo);
 router.put('/prestamos/:prestamoId/devolucion', checkPermission('update'), prestamoController.registrarDevolucion);
 router.get('/prestamos/reporte', checkPermission('read'), prestamoController.obtenerReportePrestamos);
 router.get('/prestamos', checkPermission('read'), prestamoController.listar);
 
 router.get('/categorias', checkPermission('read'), categoriaController.listar);
 router.post('/categorias', checkPermission('create'), categoriaController.crear);
+
+//reportes
+
+router.get('/reportes/prestamos', checkPermission('read'), reporteController.generarReporte);
 
 module.exports = router;

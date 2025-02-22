@@ -2,10 +2,41 @@
 const roles = {
     Administrador: ['all'],
     Bibliotecario: ['read', 'create', 'update'],
-    Usuario: ['read']
+    Usuario: ['read', 'createPrestamo']
 };
 
+
+
 function checkPermission(requiredRole) {
+    return (req, res, next) => {
+        const userRole = req.user.rol;
+        
+        // Para estudiantes, solo permitir préstamos
+        if (userRole === 'Usuario') {
+            if (req.path.includes('/prestamos') && req.method === 'POST') {
+                return next();
+            }
+            if (req.method === 'GET') {
+                return next();
+            }
+            return res.status(403).json({ error: 'No tiene permisos suficientes' });
+        }
+
+        if (!userRole || !roles[userRole]) {
+            return res.status(403).json({ error: 'Rol no válido' });
+        }
+
+        if (userRole === 'Administrador' || roles[userRole].includes(requiredRole)) {
+            next();
+        } else {
+            res.status(403).json({ error: 'No tiene permisos suficientes' });
+        }
+    };
+}
+
+module.exports = { checkPermission };
+
+/*function checkPermission(requiredRole) {
     return (req, res, next) => {
         // Get user role from JWT token (set by auth middleware)
         const userRole = req.user?.rol;
@@ -35,6 +66,5 @@ function checkPermission(requiredRole) {
             });
         }
     };
-}
+}*/
 
-module.exports = { checkPermission };

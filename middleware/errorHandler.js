@@ -1,5 +1,25 @@
 const createHttpError = require('http-errors');
 
+// middleware/errorHandler.js
+/*const errorHandler = (err, req, res, next) => {
+    console.error('Error:', err);
+    
+    if (err.sql) {
+        return res.status(500).json({ 
+            error: 'Error en base de datos',
+            details: process.env.NODE_ENV === 'development' ? err.message : undefined
+        });
+    }
+
+    res.status(500).json({ 
+        error: 'Error interno del servidor',
+        details: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+};*/
+
+
+
+
 const errorHandler = {
     notFound(req, res, next) {
         next(createHttpError(404, 'Recurso no encontrado'));
