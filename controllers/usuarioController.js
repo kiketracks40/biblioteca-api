@@ -96,25 +96,24 @@ class UsuarioController {
   }
 
   async eliminar(req, res) {
-      try {
-          const { id } = req.params;
-          const pool = await poolPromise;
-          
-          await pool.request()
-              .input('id', sql.Int, id)
-              .query(`
-                  UPDATE Usuarios 
-                  SET Estado = 0,
-                      FechaModificacion = GETDATE(),
-                      UsuarioModificacion = 'SYSTEM'
-                  WHERE UsuarioId = @id
-              `);
-          
-          res.json({ message: 'Usuario eliminado exitosamente' });
-      } catch (error) {
-          res.status(500).json({ error: error.message });
-      }
-  }
+    try {
+        const { id } = req.params;
+        const pool = await poolPromise;
+        
+        const result = await pool.request()
+            .input('id', sql.Int, id)
+            .query('UPDATE Usuarios SET Estado = 0 WHERE UsuarioId = @id');
+            
+        if (result.rowsAffected[0] === 0) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        res.json({ message: 'Usuario eliminado exitosamente' });
+    } catch (error) {
+        console.error('Error al eliminar usuario:', error);
+        res.status(500).json({ error: 'Error al eliminar usuario' });
+    }
+}
 
  // .. other existing methods
 

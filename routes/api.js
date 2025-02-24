@@ -38,7 +38,7 @@ router.post('/auth/logout', authController.logout);
 router.get('/usuarios', checkPermission('read'), usuarioController.listar);
 router.post('/usuarios', checkPermission('create'), usuarioController.crear);
 router.put('/usuarios/:id', checkPermission('update'), usuarioController.actualizar);
-router.delete('/usuarios/:id', checkPermission('delete'), usuarioController.eliminar);
+router.delete('/usuarios/:id', authMiddleware, usuarioController.eliminar);
 router.get('/usuarios/prestamos', checkPermission('read'), usuarioController.obtenerPrestamosPorUsuario);
 
 
